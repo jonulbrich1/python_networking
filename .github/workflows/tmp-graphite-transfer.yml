@@ -1,0 +1,21 @@
+name: tmp-graphite-transfer
+on:
+  push:
+    branches:
+      - tmp-graphite-gold265-transfer-20261002
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Decode transfer package
+        shell: bash
+        run: |
+          mkdir -p out
+          tr -d '\n\r\t ' < .tmp/graphite_gold265_trainpkg_v1.b64 | base64 -d > out/graphite_gold265_trainpkg_v1.xz
+          xz -t out/graphite_gold265_trainpkg_v1.xz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: graphite-gold265-transfer
+          path: out/graphite_gold265_trainpkg_v1.xz
+          retention-days: 1
